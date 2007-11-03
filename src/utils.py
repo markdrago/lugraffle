@@ -18,5 +18,6 @@ def get_local_ipv4_addresses():
 
         ip = line[tagstart + len(tag):slash]
         iplist.append(ip)
-
+    iphandle.close()
+    
     return iplist
