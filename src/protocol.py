@@ -1,3 +1,6 @@
+#Licensed under the MIT license
+#Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
+
 class LRPacket:
 	"""Class for parsing and creating packets for the Lug Raffle protocol"""
 	def __init__(self, data):

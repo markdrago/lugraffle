@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#Licensed under the MIT license
+#Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
 
 from twisted.internet.protocol import DatagramProtocol
 from socket import *

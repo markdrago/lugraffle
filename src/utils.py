@@ -1,3 +1,6 @@
+#Licensed under the MIT license
+#Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
+
 from os import popen
 
 def get_local_ipv4_addresses():
