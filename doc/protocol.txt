@@ -110,7 +110,7 @@ semicolon
 Examples:
 LRP100;0;
 LRP101;45;0;13;Mark's Laptop;1;13;Mark's Laptop;4;Jeff;
-LRP110;24;1;Mark's Laptop;5;Chris;
+LRP110;24;1;13;Mark's Laptop;5;Chris;
 LRP120;0;
 LRP121;41;0123456789abcdef0123456789abcdef01234567;
 LRP122;7;123456;

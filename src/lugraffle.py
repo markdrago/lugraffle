@@ -29,7 +29,7 @@ class LRServer(DatagramProtocol):
                 print "not replying to packet from self"
                 return
         
-        print "received %r from %s:%d" % (data, host, port)
+        print "received packet from %s:%d" % (data, host, port)
         self.sendsocket.sendto(data, (self.sendhost, self.sendport))
 
 #start listening for connections on our udp port
