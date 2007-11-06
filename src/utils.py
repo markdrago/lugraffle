@@ -16,11 +16,11 @@ def get_local_ipv4_addresses():
         tagstart = line.find(tag)
         if tagstart == -1:
             continue
-        
+
         slash = line.find("/")
 
         ip = line[tagstart + len(tag):slash]
         iplist.append(ip)
     iphandle.close()
-    
+
     return iplist

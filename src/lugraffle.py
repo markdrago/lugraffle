@@ -30,7 +30,7 @@ class LRServer(DatagramProtocol):
             if (host == ip):
                 print "not replying to packet from self"
                 return
-        
+
         print "received packet from %s:%d" % (data, host, port)
         self.sendsocket.sendto(data, (self.sendhost, self.sendport))
 
