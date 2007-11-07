@@ -36,41 +36,62 @@ class LRPacket:
 	method = getattr(self, methodname)
 	method(data[semicolon + 1:])
 
-        def parse_packet_raffle_node_discover(self, data):
-	    print 'Received Packet: RAFFLE_NODE_DISCOVER'
+    def parse_packet_raffle_node_discover(self, data):
+	print 'Received Packet: RAFFLE_NODE_DISCOVER'
 
-        def parse_packet_raffle_node_found(self, data):
-	    print 'Received Packet: RAFFLE_NODE_FOUND'
-	    print 'data: %s' % data
+    def parse_packet_raffle_node_found(self, data):
+	print 'Received Packet: RAFFLE_NODE_FOUND'
+	objects = self.get_object_list(data)
+
+	self.items = {}
+	for obj in objects:
+	    if (obj[0] == 'ITEM'):
+		self.items[obj[1]] = []
+	for obj in objects:
+	    if (obj[0] == 'ENTRY'):
+		if obj[1] in self.items:
+		    self.items[obj[1]].append(obj[2])
+		else:
+		    raise LRPacketError("Entry found without Item: %s" % obj[1])
+
+    def get_object_list(self, data):
+	objects = []
+
+	while len(data) > 0:
 	    object_type = self.get_next_object_type(data)
+
 	    if object_type == 'ITEM':
-		item_found = self.get_entry_piece(data[2:])
-		print 'Found Item: %s' % item_found
+		(item, data) = self.get_entry_piece(data[2:])
+		entry = ""
+		print 'Found Item: %s' % item
+
 	    elif object_type == 'ENTRY':
-		(item, entry) = self.get_object_entry(data[2:])
+		(item, entry, data) = self.get_object_entry(data[2:])
 		print 'Found Entry: %s -> %s' % (item, entry)
 
-        def get_object_entry(self, data):
-	    item = self.get_entry_piece(data)
-	    semi = data.find(';') + 1
-	    semi = data.find(';', semi) + 1
-	    entry = self.get_entry_piece(data[semi:])
-	    return (item, entry)
+	    object_found = (object_type, item, entry)
+	    objects.append(object_found)
+	return objects
 
-        def get_entry_piece(self, data):
-	    #skip length
-	    post_semi1 = data.find(';') + 1
-	    semi2 = data.find(';', post_semi1)
-	    return data[post_semi1:semi2]
+    def get_object_entry(self, data):
+	#get the item and then get the entry
+	(item, data) = self.get_entry_piece(data)
+	(entry, data) = self.get_entry_piece(data)
+	return (item, entry, data)
 
-        def get_next_object_type(self, data):
-	    print 'Getting Object Type'
-	    if data[:2] == '0;':
-		return 'ITEM'
-	    elif data[:2] == '1;':
-		return 'ENTRY'
-	    else:
-		raise LRPacketError('Unknown Object Type')
+    def get_entry_piece(self, data):
+	#skip length and return what lies between the semicolons
+	post_semi1 = data.find(';') + 1
+	semi2 = data.find(';', post_semi1)
+	return (data[post_semi1:semi2], data[semi2 + 1:])
+
+    def get_next_object_type(self, data):
+	if data[:2] == '0;':
+	    return 'ITEM'
+	elif data[:2] == '1;':
+	    return 'ENTRY'
+	else:
+	    raise LRPacketError('Unknown Object Type')
 
 class LRPacketError(Exception):
     """Base exception thrown due to packet errors."""
