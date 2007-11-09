@@ -29,6 +29,8 @@ class LRPacket:
 	else:
 	    raise LRPacketError('Unidentified Packet Type')
 
+	print "Received Packet: %s" % self.packet_type
+
 	semicolon = data.find(';', 7)
 
 	#a bit of magic here calls the right method
@@ -37,49 +39,47 @@ class LRPacket:
 	method(data[semicolon + 1:])
 
     def parse_packet_raffle_node_discover(self, data):
-	print 'Received Packet: RAFFLE_NODE_DISCOVER'
+	pass
 
     def parse_packet_raffle_node_found(self, data):
-	print 'Received Packet: RAFFLE_NODE_FOUND'
-	objects = self.get_object_list(data)
+	(self.items, self.entries) = self.get_object_lists(data)
 
-	self.items = {}
-	for obj in objects:
-	    if (obj[0] == 'ITEM'):
-		self.items[obj[1]] = []
-	for obj in objects:
-	    if (obj[0] == 'ENTRY'):
-		if obj[1] in self.items:
-		    self.items[obj[1]].append(obj[2])
-		else:
-		    raise LRPacketError("Entry found without Item: %s" % obj[1])
+    def parse_packet_raffle_object_add(self, data):
+	(self.items, self.entries) = self.get_object_lists(data)
 
-    def get_object_list(self, data):
-	objects = []
+    def parse_packet_raffle_drawing_start(self, data):
+	pass
+    
+    def parse_packet_raffle_drawing_result(self, data):
+	(self.items, self.entries) = self.get_object_lists(data)
+
+    def get_object_lists(self, data):
+	items = []
+	entries = []
 
 	while len(data) > 0:
 	    object_type = self.get_next_object_type(data)
 
 	    if object_type == 'ITEM':
-		(item, data) = self.get_entry_piece(data[2:])
-		entry = ""
+		(item, data) = self.get_object_piece(data[2:])
+		items.append(item)
 		print 'Found Item: %s' % item
 
 	    elif object_type == 'ENTRY':
 		(item, entry, data) = self.get_object_entry(data[2:])
+		entry_found = (item, entry)
+		entries.append(entry_found)
 		print 'Found Entry: %s -> %s' % (item, entry)
 
-	    object_found = (object_type, item, entry)
-	    objects.append(object_found)
-	return objects
+	return (items, entries)
 
     def get_object_entry(self, data):
 	#get the item and then get the entry
-	(item, data) = self.get_entry_piece(data)
-	(entry, data) = self.get_entry_piece(data)
+	(item, data) = self.get_object_piece(data)
+	(entry, data) = self.get_object_piece(data)
 	return (item, entry, data)
 
-    def get_entry_piece(self, data):
+    def get_object_piece(self, data):
 	#skip length and return what lies between the semicolons
 	post_semi1 = data.find(';') + 1
 	semi2 = data.find(';', post_semi1)
