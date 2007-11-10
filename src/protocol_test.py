@@ -25,6 +25,12 @@ class LRPacketTest():
         print "\nTesting RAFFLE_DRAWING_START"
 	self.test_packet(True, 'LRP120;')
 
+	print "\nTesting RAFFLE_DRAWING_RESPONSE_HASH"
+	self.test_packet(True, 'LRP121;41;0123456789abcdef0123456789abcdef01234567;')
+
+	print "\nTesting RAFFLE_DRAWING_RESPONSE"
+	self.test_packet(True, 'LRP122;7;123456;')
+
 	print "\nTesting RAFFLE_DRAWING_RESULT"
 	self.test_packet(True, "LRP123;27;1;13;Mark's Laptop;5;Chris;")
 

@@ -32,26 +32,17 @@ class LRPacket:
 	print "Received Packet: %s" % self.packet_type
 
 	semicolon = data.find(';', 7)
+	datasection = data[semicolon + 1:]
 
-	#a bit of magic here calls the right method
-	methodname = 'parse_packet_' + self.packet_type.lower()
-	method = getattr(self, methodname)
-	method(data[semicolon + 1:])
-
-    def parse_packet_raffle_node_discover(self, data):
-	pass
-
-    def parse_packet_raffle_node_found(self, data):
-	(self.items, self.entries) = self.get_object_lists(data)
-
-    def parse_packet_raffle_object_add(self, data):
-	(self.items, self.entries) = self.get_object_lists(data)
-
-    def parse_packet_raffle_drawing_start(self, data):
-	pass
-    
-    def parse_packet_raffle_drawing_result(self, data):
-	(self.items, self.entries) = self.get_object_lists(data)
+	if (self.packet_type == 'RAFFLE_NODE_DISCOVER' or
+	    self.packet_type == 'RAFFLE_DRAWING_START'):
+	    pass
+	elif (self.packet_type == 'RAFFLE_DRAWING_RESPONSE' or
+	      self.packet_type == 'RAFFLE_DRAWING_RESPONSE_HASH'):
+	    self.content = datasection[:-1]
+	    print "Found Content: %s" % self.content
+	else:
+	    (self.items, self.entries) = self.get_object_lists(datasection)
 
     def get_object_lists(self, data):
 	items = []
@@ -91,7 +82,8 @@ class LRPacket:
 	elif data[:2] == '1;':
 	    return 'ENTRY'
 	else:
-	    raise LRPacketError('Unknown Object Type')
+	    print "data: %s" % data
+	    raise LRPacketError('Unknown LR Object Type')
 
 class LRPacketError(Exception):
     """Base exception thrown due to packet errors."""
