@@ -12,6 +12,7 @@ from twisted.internet import reactor
 
 #import our stuff
 import utils
+from protocol import *
 
 #define what we should do when we receive a packet
 class LRServer(DatagramProtocol):
@@ -31,7 +32,13 @@ class LRServer(DatagramProtocol):
                 print "not replying to packet from self"
                 return
 
-        print "received packet from %s:%d" % (data, host, port)
+        print "received packet from %s:%d" % (host, port)
+	try:
+	    packet = LRPacket(data)
+	except LRPacketError, (errstr):
+	    print "Error while parsing packet: %s" % errstr
+	    return
+	    
         self.sendsocket.sendto(data, (self.sendhost, self.sendport))
 
 #start listening for connections on our udp port

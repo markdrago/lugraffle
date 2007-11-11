@@ -8,6 +8,8 @@ class LRPacket:
             self.parse_packet(data)
 
     def parse_packet(self, data):
+	data = data.strip("\n")
+
         if data[:4] != 'LRP1':
             raise LRPacketError('Not a LugRaffle Packet')
 
