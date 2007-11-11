@@ -1,6 +1,11 @@
 #Licensed under the MIT license
 #Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
 
+import logging
+
+#create logger
+logger = logging.getLogger('LR.LRPacket')
+
 class LRPacket:
     """Class for parsing and creating packets for the Lug Raffle protocol"""
     def __init__(self, data):
@@ -31,7 +36,7 @@ class LRPacket:
 	else:
 	    raise LRPacketError('Unidentified Packet Type')
 
-	print "Received Packet: %s" % self.packet_type
+	logger.info("Received Packet: %s" % self.packet_type)
 
 	semicolon = data.find(';', 7)
 	datasection = data[semicolon + 1:]
@@ -42,7 +47,7 @@ class LRPacket:
 	elif (self.packet_type == 'RAFFLE_DRAWING_RESPONSE' or
 	      self.packet_type == 'RAFFLE_DRAWING_RESPONSE_HASH'):
 	    self.content = datasection[:-1]
-	    print "Found Content: %s" % self.content
+	    logger.info("Found Content: %s" % self.content)
 	else:
 	    (self.items, self.entries) = self.get_object_lists(datasection)
 
@@ -56,13 +61,13 @@ class LRPacket:
 	    if object_type == 'ITEM':
 		(item, data) = self.get_object_piece(data[2:])
 		items.append(item)
-		print 'Found Item: %s' % item
+		logger.info('Found Item: %s' % item)
 
 	    elif object_type == 'ENTRY':
 		(item, entry, data) = self.get_object_entry(data[2:])
 		entry_found = (item, entry)
 		entries.append(entry_found)
-		print 'Found Entry: %s -> %s' % (item, entry)
+		logger.info('Found Entry: %s -> %s' % (item, entry))
 
 	return (items, entries)
 
@@ -84,7 +89,6 @@ class LRPacket:
 	elif data[:2] == '1;':
 	    return 'ENTRY'
 	else:
-	    print "data: %s" % data
 	    raise LRPacketError('Unknown LR Object Type')
 
 class LRPacketError(Exception):

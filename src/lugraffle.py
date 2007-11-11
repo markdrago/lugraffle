@@ -2,6 +2,7 @@
 #Licensed under the MIT license
 #Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
 
+import logging, sys
 from twisted.internet.protocol import DatagramProtocol
 from socket import *
 
@@ -13,6 +14,9 @@ from twisted.internet import reactor
 #import our stuff
 import utils
 from protocol import *
+
+#create logger
+logger = logging.getLogger('LR.LRServer')
 
 #define what we should do when we receive a packet
 class LRServer(DatagramProtocol):
@@ -29,19 +33,27 @@ class LRServer(DatagramProtocol):
         #we should not respond to packets that we sent ourselves
         for ip in self.local_ip_list:
             if (host == ip):
-                print "not replying to packet from self"
+                logger.debug("Not replying to packet from self")
                 return
 
-        print "received packet from %s:%d" % (host, port)
+        logger.info("Received packet from %s:%d" % (host, port))
 	try:
 	    packet = LRPacket(data)
 	except LRPacketError, (errstr):
-	    print "Error while parsing packet: %s" % errstr
+	    logger.warning("Error while parsing packet: %s" % errstr)
 	    return
 	    
         self.sendsocket.sendto(data, (self.sendhost, self.sendport))
 
+
+def start_logger():
+    logging.basicConfig(level=logging.DEBUG,
+			format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+			datefmt='%H:%M:%S',
+			stream=sys.stderr)
+
 #start listening for connections on our udp port
 if __name__ == '__main__':
+    start_logger()
     reactor.listenUDP(1234, LRServer())
     reactor.run()
