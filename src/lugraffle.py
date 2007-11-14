@@ -12,7 +12,7 @@ glib2reactor.install()
 from twisted.internet import reactor
 
 #import our stuff
-import utils
+import utils, lr_model
 from protocol import *
 
 #create logger
