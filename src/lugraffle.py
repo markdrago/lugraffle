@@ -31,10 +31,9 @@ class LRServer(DatagramProtocol):
 
     def datagramReceived(self, data, (host, port)):
         #we should not respond to packets that we sent ourselves
-        for ip in self.local_ip_list:
-            if (host == ip):
-                logger.debug("Not replying to packet from self")
-                return
+        if host in self.local_ip_list:
+	    logger.debug("Not replying to packet from self")
+	    return
 
         logger.info("Received packet from %s:%d" % (host, port))
 	try:
