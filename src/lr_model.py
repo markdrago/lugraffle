@@ -1,7 +1,7 @@
 
-class LRModel:
+class LRModel():
 
-    def LRModel(self):
+    def __init__(self):
 	self.items = {}
 
     def add_item(self, item_name):
@@ -14,8 +14,8 @@ class LRModel:
 		self.items[item_name].append(entry_name)
 
     def get_items(self):
-	return __iter__(self.items.keys())
+	return self.items.keys()
 
     def get_entries_for_item(self, item_name):
 	if item_name in self.items:
-	    return __iter__(self.items[item_name])
+	    return self.items[item_name]
