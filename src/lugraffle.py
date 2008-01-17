@@ -16,13 +16,12 @@ import utils
 from protocol import *
 from lr_model import *
 
-logging.basicConfig(level=logging.DEBUG,
-		    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-		    datefmt='%H:%M:%S',
-		    stream=sys.stderr)
-
 class LugRaffle():
     def __init__(self):
+	logging.basicConfig(level=logging.DEBUG,
+			    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+			    datefmt='%H:%M:%S',
+			    stream=sys.stderr)
     	self.logger = logging.getLogger('LR.LugRaffle')
 	self.model = LRModel()
 
