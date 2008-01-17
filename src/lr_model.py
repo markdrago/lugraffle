@@ -1,7 +1,10 @@
 
+import logging
+
 class LRModel():
 
     def __init__(self):
+	self.logger = logging.getLogger('LR.LRModel')
 	self.items = {}
 
     def add_item(self, item_name):
@@ -19,3 +22,10 @@ class LRModel():
     def get_entries_for_item(self, item_name):
 	if item_name in self.items:
 	    return self.items[item_name]
+
+    def dump_model_state(self):
+	self.logger.info("Model:")
+	for item in self.get_items():
+	    self.logger.info("%s" % item)
+	    for entry in self.get_entries_for_item(item):
+		self.logger.info("    %s" % entry)

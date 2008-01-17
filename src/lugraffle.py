@@ -45,7 +45,7 @@ class LRServer(DatagramProtocol):
 	self.local_ip_list = utils.get_local_ipv4_addresses()
 
     def datagramReceived(self, data, (host, port)):
-	#we should not respond to packets that we sent ourselves
+	#we should not handle packets that we sent ourselves
 	if host in self.local_ip_list:
 	    self.logger.debug("Not replying to packet from self")
 	    return
@@ -57,7 +57,15 @@ class LRServer(DatagramProtocol):
 	    self.logger.warning("Error while parsing packet: %s" % errstr)
 	    return
 	    
-	self.sendsocket.sendto(data, (self.sendhost, self.sendport))
+	#packet is changing things, tell the model about it
+	if (packet.packet_type == 'RAFFLE_NODE_FOUND' or
+	    packet.packet_type == 'RAFFLE_OBJECT_ADD'):
+	    for item in packet.items:
+		self.model.add_item(item)
+	    for entry in packet.entries:
+		self.model.add_entry(entry[0], entry[1])
+
+	self.model.dump_model_state()
 
 #start listening for connections on our udp port
 if __name__ == '__main__':
