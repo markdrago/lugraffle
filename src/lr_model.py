@@ -18,7 +18,6 @@ class LRModel():
     #parameter allows some listeners to override the protection.
     def register_listener(self, name, func, send_self_changes = False):
 	self.listeners[name] = (func, send_self_changes)
-	self.logger.info("adding listener: %s" % name)
 
     def add_item(self, src, item_name):
 	#add item
@@ -27,11 +26,8 @@ class LRModel():
 
 	    #notify listeners
 	    for listener in self.listeners.keys():
-		self.logger.info("possibly sending to %s" % listener)
 		if listener == src and not self.listeners[listener][1]:
-		    self.logger.info("not sending to %s" % listener)
 		    continue
-		self.logger.info("sending to %s" % listener)
 		self.listeners[listener][0](item_name, None)
 
     def add_entry(self, src, item_name, entry_name):

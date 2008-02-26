@@ -24,29 +24,19 @@ class LugRaffle():
 			    stream=sys.stderr)
     	self.logger = logging.getLogger('LR.LugRaffle')
 	self.model = LRModel()
-	self.client = LRClient(1234, self.model)
 	self.server = LRServer(1234, self.model)
 
     def main(self):
 	reactor.run()
 
-#class that announces things to the network
-class LRClient:
-    def __init__(self, port, model):
-	self.logger = logging.getLogger('LR.LRClient')
-	self.port = port
-	self.model = model
-	self.model.register_listener('net', self.announce_change, True)
-
-    def announce_change(self, item, entry):
-	self.logger.info("announcing %s --> %s" % (item, entry))
-
-#define what we should do when we receive a packet
+#network interface for lug raffle
 class LRServer(DatagramProtocol):
     def __init__(self, port, model):
+	self.port = port
 	self.model = model
 	self.logger = logging.getLogger('LR.LRServer')
-	reactor.listenUDP(port, self)
+	self.model.register_listener('net', self.announce_change, False)
+	reactor.listenUDP(self.port, self)
 
     def startProtocol(self):
 	self.sendsocket = socket(AF_INET, SOCK_DGRAM)
@@ -76,6 +66,15 @@ class LRServer(DatagramProtocol):
 		self.model.add_entry('net', entry[0], entry[1])
 
 	self.model.dump_model_state()
+
+    def announce_change(self, item, entry):
+	packet = LRPacket()
+	packet.set_type('RAFFLE_OBJECT_ADD')
+	packet.add_object(item, entry)
+	data = packet.produce_packet()
+
+	self.logger.info("Sending Data: %s" % data)
+	self.sendsocket.sendto(data, ('<broadcast>', self.port))
 
 #start listening for connections on our udp port
 if __name__ == '__main__':
