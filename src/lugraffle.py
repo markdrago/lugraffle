@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #Licensed under the MIT license
-#Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
+#Copyright (c) 2007, 2008 Mark Drago <markdrago@gmail.com>
 
 import logging, sys
 from twisted.internet.protocol import DatagramProtocol
@@ -24,19 +24,29 @@ class LugRaffle():
 			    stream=sys.stderr)
     	self.logger = logging.getLogger('LR.LugRaffle')
 	self.model = LRModel()
+	self.client = LRClient(1234, self.model)
+	self.server = LRServer(1234, self.model)
 
     def main(self):
-	reactor.listenUDP(1234, LRServer(self.model))
 	reactor.run()
+
+#class that announces things to the network
+class LRClient:
+    def __init__(self, port, model):
+	self.logger = logging.getLogger('LR.LRClient')
+	self.port = port
+	self.model = model
+	self.model.register_listener('net', self.announce_change, True)
+
+    def announce_change(self, item, entry):
+	self.logger.info("announcing %s --> %s" % (item, entry))
 
 #define what we should do when we receive a packet
 class LRServer(DatagramProtocol):
-    sendport = 1234
-    sendhost = "<broadcast>"
-
-    def __init__(self, model):
+    def __init__(self, port, model):
 	self.model = model
 	self.logger = logging.getLogger('LR.LRServer')
+	reactor.listenUDP(port, self)
 
     def startProtocol(self):
 	self.sendsocket = socket(AF_INET, SOCK_DGRAM)
@@ -61,9 +71,9 @@ class LRServer(DatagramProtocol):
 	if (packet.packet_type == 'RAFFLE_NODE_FOUND' or
 	    packet.packet_type == 'RAFFLE_OBJECT_ADD'):
 	    for item in packet.items:
-		self.model.add_item(item)
+		self.model.add_item('net', item)
 	    for entry in packet.entries:
-		self.model.add_entry(entry[0], entry[1])
+		self.model.add_entry('net', entry[0], entry[1])
 
 	self.model.dump_model_state()
 
