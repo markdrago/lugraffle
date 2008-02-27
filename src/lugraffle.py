@@ -12,6 +12,7 @@ from twisted.internet import reactor
 #import our stuff
 from lr_model import *
 from lr_net import *
+from lr_dbus import *
 
 class LugRaffle():
     def __init__(self):
@@ -22,6 +23,7 @@ class LugRaffle():
     	self.logger = logging.getLogger('LR.LugRaffle')
 	self.model = LRModel()
 	self.server = LRServer(1234, self.model, reactor)
+	self.bus = LRDBus(self.model, reactor)
 
     def main(self):
 	reactor.run()
