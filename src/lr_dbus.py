@@ -12,7 +12,7 @@ from lr_model import *
 class LRDBus(dbus.service.Object):
     def __init__(self, reactor):
 	self.model = LRModel.get_model()
-	self.logger = logging.getLogger('LR.LRServer')
+	self.logger = logging.getLogger('LR.LRDBus')
 	self.bus = dbus.SessionBus()
 	self.name = dbus.service.BusName('org.lilug.lugraffle')
 	dbus.service.Object.__init__(self, self.bus, '/org/lilug/lugraffle')

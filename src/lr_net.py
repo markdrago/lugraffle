@@ -6,10 +6,10 @@ import logging
 from lr_model import *
 
 #network interface for lug raffle
-class LRServer(DatagramProtocol):
+class LRNet(DatagramProtocol):
     def __init__(self, port, reactor):
 	self.port = port
-	self.logger = logging.getLogger('LR.LRServer')
+	self.logger = logging.getLogger('LR.LRNet')
 	self.model = LRModel.get_model()
 	self.model.register_listener('net', self.announce_change, False)
 	reactor.listenUDP(self.port, self)
