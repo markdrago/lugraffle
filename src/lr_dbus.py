@@ -32,6 +32,10 @@ class LRDBus(dbus.service.Object):
     def entry_added(self, item, entry):
 	self.logger.info("Sending DBus Signal for New Entry: %s, %s" % (item, entry))
 
-    @dbus.service.method('org.lilug.lugraffle')
-    def ping(self):
-	return "pong"
+    @dbus.service.method('org.lilug.lugraffle', in_signature='s')
+    def add_item(self, item):
+	self.model.add_item('dbus', item)
+
+    @dbus.service.method('org.lilug.lugraffle', in_signature='ss')
+    def add_entry(self, item, entry):
+	self.model.add_entry('dbus', item, entry)
