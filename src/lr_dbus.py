@@ -16,7 +16,7 @@ class LRDBus(dbus.service.Object):
 	self.logger = logging.getLogger('LR.LRDBus')
 	self.bus = dbus.SessionBus()
 	self.name = dbus.service.BusName('org.lilug.lugraffle')
-	dbus.service.Object.__init__(self, self.bus, '/org/lilug/lugraffle')
+	dbus.service.Object.__init__(self, self.bus, '/')
 
     def announce_change(self, item, entry):
 	if entry is None:
