@@ -30,24 +30,14 @@ class LRModel():
 	#add item
 	if item_name not in self.items:
 	    self.items[item_name] = []
-
-	    #notify listeners
-	    for listener in self.listeners.keys():
-		if listener == src and not self.listeners[listener][1]:
-		    continue
-		self.listeners[listener][0](item_name, None)
+	    self.notify_listeners(src, item_name, None)
 
     def add_entry(self, src, item_name, entry_name):
 	#add entry
 	if item_name in self.items:
 	    if entry_name not in self.items[item_name]:
 		self.items[item_name].append(entry_name)
-
-		#notify listeners
-		for listener in self.listeners.keys():
-		    if listener == src and not self.listeners[listener][1]:
-			continue
-		    self.listeners[listener][0](item_name, entry_name)
+		self.notify_listeners(src, item_name, entry_name)
 
     def get_items(self):
 	return self.items.keys()
@@ -55,6 +45,12 @@ class LRModel():
     def get_entries_for_item(self, item_name):
 	if item_name in self.items:
 	    return self.items[item_name]
+
+    def notify_listeners(self, src, item, entry):
+	for listener in self.listeners.keys():
+	    if listener == src and not self.listeners[listener][1]:
+		continue
+	    self.listeners[listener][0](item, entry)
 
     def dump_model_state(self):
 	self.logger.info("Model:")
