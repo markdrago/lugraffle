@@ -5,6 +5,13 @@
 import logging
 
 class LRModel():
+    singleton = None
+    
+    def get_model(cls):
+	if cls.singleton is None:
+	    cls.singleton = LRModel()
+	return cls.singleton
+    get_model = classmethod(get_model)
 
     def __init__(self):
 	self.logger = logging.getLogger('LR.LRModel')

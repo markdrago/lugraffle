@@ -3,13 +3,14 @@ from twisted.internet.protocol import DatagramProtocol
 from protocol import *
 import utils
 import logging
+from lr_model import *
 
 #network interface for lug raffle
 class LRServer(DatagramProtocol):
-    def __init__(self, port, model, reactor):
+    def __init__(self, port, reactor):
 	self.port = port
-	self.model = model
 	self.logger = logging.getLogger('LR.LRServer')
+	self.model = LRModel.get_model()
 	self.model.register_listener('net', self.announce_change, False)
 	reactor.listenUDP(self.port, self)
 
