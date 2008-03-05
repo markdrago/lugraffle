@@ -12,10 +12,25 @@ from lr_model import *
 class LRDBus(dbus.service.Object):
     def __init__(self, reactor):
 	self.model = LRModel.get_model()
+	self.model.register_listener('dbus', self.announce_change, True)
 	self.logger = logging.getLogger('LR.LRDBus')
 	self.bus = dbus.SessionBus()
 	self.name = dbus.service.BusName('org.lilug.lugraffle')
 	dbus.service.Object.__init__(self, self.bus, '/org/lilug/lugraffle')
+
+    def announce_change(self, item, entry):
+	if entry is None:
+	    self.item_added(item)
+	else:
+	    self.entry_added(item, entry)
+
+    @dbus.service.signal(dbus_interface='org.lilug.lugraffle', signature='s')
+    def item_added(self, item):
+	self.logger.info("Sending DBus Signal for New Item: %s" % item)
+
+    @dbus.service.signal(dbus_interface='org.lilug.lugraffle', signature='ss')
+    def entry_added(self, item, entry):
+	self.logger.info("Sending DBus Signal for New Entry: %s, %s" % (item, entry))
 
     @dbus.service.method('org.lilug.lugraffle')
     def ping(self):
