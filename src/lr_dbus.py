@@ -39,3 +39,15 @@ class LRDBus(dbus.service.Object):
     @dbus.service.method('org.lilug.lugraffle', in_signature='ss')
     def add_entry(self, item, entry):
 	self.model.add_entry('dbus', item, entry)
+
+    @dbus.service.method('org.lilug.lugraffle', out_signature='as')
+    def get_items(self):
+	return self.model.get_items()
+
+    @dbus.service.method('org.lilug.lugraffle', in_signature='s', out_signature='as')
+    def get_entries_for_item(self, item):
+	return self.model.get_entries_for_item(item)
+
+    @dbus.service.method('org.lilug.lugraffle', out_signature='a{sas}')
+    def get_items_and_entries(self):
+	return self.model.get_items_and_entries()

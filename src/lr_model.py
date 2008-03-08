@@ -46,6 +46,9 @@ class LRModel():
 	if item_name in self.items:
 	    return self.items[item_name]
 
+    def get_items_and_entries(self):
+	return self.items
+
     def notify_listeners(self, src, item, entry):
 	for listener in self.listeners.keys():
 	    if listener == src and not self.listeners[listener][1]:
