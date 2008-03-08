@@ -1,0 +1,43 @@
+Lugraffle exposes a DBus API that is meant to be used by all of the user
+interfaces that Lugraffle will suppport.  This file documens the rather
+simple API that Lugraffle exposes over DBus.  I recommend using the
+excellent D-Feet DBus debugger when playing with the DBus API of Lugraffle.
+It is available here: https://fedorahosted.org/d-feet/
+
+General:
+^^^^^^^^
+Bus: session-bus
+Well-known Connection Name: org.lilug.lugraffle
+Object Path: /
+Interface: org.lilug.lugraffle
+
+Methods:
+^^^^^^^^
+get_items
+	in: None
+	out: array of strings (item names)
+
+get_entries_for_item
+	in: string (name of item)
+	out: array of strings (entry names for this item)
+
+get_items_and_entries
+	in: None
+	out: dictionary {string -> array of strings}
+	     (key = item name, value = array of entry names for item)
+
+add_item
+	in: string (name of item)
+	out: None
+
+add_entry
+	in: string, string (name of item, name of entry)
+	out: None
+
+Signals:
+^^^^^^^^
+item_added
+	out: string (name of item)
+
+entry_added
+	out: string, string (name of item, name of entry)
