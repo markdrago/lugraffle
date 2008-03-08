@@ -4,7 +4,6 @@
 import dbus
 import dbus.service
 import dbus.glib
-import utils
 import logging
 from lr_model import *
 

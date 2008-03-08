@@ -3,7 +3,7 @@
 #Copyright (c) 2007 Mark Drago <markdrago@gmail.com>
 
 import logging, sys
-from protocol import *
+from lr_packet import *
 
 class LRPacketTest():
     'Class to test the LRPacket class'

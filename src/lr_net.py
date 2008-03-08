@@ -1,8 +1,10 @@
+import logging
+
 from socket import *
 from twisted.internet.protocol import DatagramProtocol
-from protocol import *
-import utils
-import logging
+
+import lr_utils
+from lr_packet import *
 from lr_model import *
 
 #network interface for lug raffle
@@ -18,7 +20,7 @@ class LRNet(DatagramProtocol):
 	self.sendsocket = socket(AF_INET, SOCK_DGRAM)
 	self.sendsocket.bind(('', 0))
 	self.sendsocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-	self.local_ip_list = utils.get_local_ipv4_addresses()
+	self.local_ip_list = lr_utils.get_local_ipv4_addresses()
 
     def datagramReceived(self, data, (host, port)):
 	#we should not handle packets that we sent ourselves
