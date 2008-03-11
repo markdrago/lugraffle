@@ -5,7 +5,12 @@ class LRTerm():
     def __init__(self):
 	self.logger = logging.getLogger('LRTerm')
 	self.dbus_bus = dbus.SessionBus()
-	self.dbus_obj = self.dbus_bus.get_object('org.lilug.lugraffle', '/')
+	try:
+	    self.dbus_obj = self.dbus_bus.get_object('org.lilug.lugraffle', '/')
+	except dbus.exceptions.DBusException:
+	    print "Unable to connect to the org.lilug.lugraffle DBus service."
+	    print "Are you sure that lugraffled is running?"
+	    exit(1)
 	self.dbus_iface = dbus.Interface(self.dbus_obj,
 					 dbus_interface='org.lilug.lugraffle')
 	self.cmds = {"ls" : [ [0, 1], self.ls,
