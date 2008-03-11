@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+#Licensed under the MIT license
+#Copyright (c) 2008 Mark Drago <markdrago@gmail.com>
+
 import logging, sys, readline, shlex
 import dbus
 
@@ -49,8 +53,8 @@ class LRTerm():
 
     def help(self, args):
 	print "Commands:"
-	for tpl in self.cmds:
-	    print "%s\t-- %s" % (tpl[0], tpl[3])
+	for cmd in self.cmds.keys():
+	    print "%s\t-- %s" % (cmd, self.cmds[cmd][2])
 
     def add_item(self, item):
 	self.dbus_iface.add_item(item)
