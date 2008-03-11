@@ -13,13 +13,13 @@ from twisted.internet import reactor
 from lr_net import *
 from lr_dbus import *
 
-class LugRaffle():
+class LugRaffleDaemon():
     def __init__(self):
 	logging.basicConfig(level=logging.DEBUG,
 			    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
 			    datefmt='%H:%M:%S',
 			    stream=sys.stderr)
-    	self.logger = logging.getLogger('LR.LugRaffle')
+    	self.logger = logging.getLogger('LR.LugRaffleDaemon')
 	self.net = LRNet(1234, reactor)
 	self.bus = LRDBus(reactor)
 
@@ -27,5 +27,5 @@ class LugRaffle():
 	reactor.run()
 
 if __name__ == '__main__':
-    lr = LugRaffle()
-    lr.main()
+    lrd = LugRaffleDaemon()
+    lrd.main()
