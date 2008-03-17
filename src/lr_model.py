@@ -43,8 +43,7 @@ class LRModel():
 	return self.items.keys()
 
     def get_entries_for_item(self, item_name):
-	if item_name in self.items:
-	    return self.items[item_name]
+	return self.items.get(item_name)
 
     def get_items_and_entries(self):
 	return self.items

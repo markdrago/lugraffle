@@ -6,6 +6,17 @@ import logging
 #create logger
 logger = logging.getLogger('LR.LRPacket')
 
+type_to_id = {
+    'RAFFLE_NODE_DISCOVER'        : '00',
+    'RAFFLE_NODE_FOUND'           : '01',
+    'RAFFLE_OBJECT_ADD'           : '10',
+    'RAFFLE_DRAWING_START'        : '20',
+    'RAFFLE_DRAWING_RESPONSE_HASH': '21',
+    'RAFFLE_DRAWING_RESPONSE'     : '22',
+    'RAFFLE_DRAWING_RESULT'       : '23',
+}
+id_to_type = dict((v,k) for k,v in type_to_id.items())
+
 class LRPacket:
     """Class for parsing and creating packets for the Lug Raffle protocol"""
     def __init__(self, data=None):
@@ -24,24 +35,13 @@ class LRPacket:
     def produce_packet(self):
 	data = 'LRP1'
 
-	if self.packet_type == 'RAFFLE_NODE_DISCOVER':
-	    data += '00;'
-	elif self.packet_type == 'RAFFLE_NODE_FOUND':
-	    data += '01;'
-	elif self.packet_type == 'RAFFLE_OBJECT_ADD':
-	    data += '10;'
-	elif self.packet_type == 'RAFFLE_DRAWING_START':
-	    data += '20;'
-	elif self.packet_type == 'RAFFLE_DRAWING_RESPONSE_HASH':
-	    data += '21;'
-	elif self.packet_type == 'RAFFLE_DRAWING_RESPONSE':
-	    data += '22;'
-	elif self.packet_type == 'RAFFLE_DRAWING_RESULT':
-	    data += '23;'
+	type_id = type_to_id.get(self.packet_type)
+	if type_id:
+	    data += type_id + ';'
 	else:
 	    raise LRPacketError('Unidentified Packet Type')
 
-	if (len(self.entries) > 0):
+	if len(self.entries) > 0:
 	    data += self.get_lists_as_data(self.entries)
 
 	return data
@@ -49,13 +49,13 @@ class LRPacket:
     def get_lists_as_data(self, entries):
 	data = ''
 	for entry in entries:
-	    if (entry[1] is None):
-		data += '0;' + str(len(entry[0])) + ';' + entry[0] + ';'
+	    if entry[1] is None:
+		data += "0;%d;%s;" % (len(entry[0]), entry[0])
 	    else:
-		data += '1;' + str(len(entry[0])) + ';' + entry[0] + ';'
-		data += str(len(entry[1])) + ';' + entry[1] + ';'
-
-	data = str(len(data)) + ';' + data
+		data += "1;%d;%s;" % (len(entry[0]), entry[0])
+		data += "%d;%s;"   % (len(entry[1]), entry[1])
+  
+	data = "%d;%s" % (len(data), data)
 	return data
 
     def parse_packet(self, data):
@@ -64,21 +64,11 @@ class LRPacket:
         if data[:4] != 'LRP1':
             raise LRPacketError('Not a LugRaffle Packet')
 
-	typetag = data[4:7]
-	if typetag == '00;':
-	    self.packet_type = 'RAFFLE_NODE_DISCOVER'
-	elif typetag == '01;':
-	    self.packet_type = 'RAFFLE_NODE_FOUND'
-	elif typetag == '10;':
-	    self.packet_type = 'RAFFLE_OBJECT_ADD'
-	elif typetag == '20;':
-	    self.packet_type = 'RAFFLE_DRAWING_START'
-	elif typetag == '21;':
-	    self.packet_type = 'RAFFLE_DRAWING_RESPONSE_HASH'
-	elif typetag == '22;':
-	    self.packet_type = 'RAFFLE_DRAWING_RESPONSE'
-	elif typetag == '23;':
-	    self.packet_type = 'RAFFLE_DRAWING_RESULT'
+	typetag = data[4:6]
+ 
+	packet_type = id_to_type.get(typetag)
+	if packet_type:
+	    self.packet_type = packet_type
 	else:
 	    raise LRPacketError('Unidentified Packet Type')
 
