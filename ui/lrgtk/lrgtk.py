@@ -13,20 +13,20 @@ except:
 
 class LRGtk:
     def __init__(self):
-	gladefile = 'lrgtk.glade'
-	windowname = 'main_window'
-	self.gladedoc = gtk.glade.XML(gladefile, windowname)
-	self.gladedoc.signal_autoconnect(self)
-	self.main_window = self.gladedoc.get_widget('main_window')
-	self.main_window.connect("delete_event", self.exit)
+        gladefile = 'lrgtk.glade'
+        windowname = 'main_window'
+        self.gladedoc = gtk.glade.XML(gladefile, windowname)
+        self.gladedoc.signal_autoconnect(self)
+        self.main_window = self.gladedoc.get_widget('main_window')
+        self.main_window.connect("delete_event", self.exit)
 
     def main(self):
-	self.main_window.show()
-	gtk.main()
+        self.main_window.show()
+        gtk.main()
 
     def exit(self, widget, event):
-	gtk.main_quit()
-	exit(0)
+        gtk.main_quit()
+        exit(0)
 
 if __name__ == '__main__':
     lrgtk = LRGtk()
