@@ -4,7 +4,7 @@
 
 import logging
 
-class LRModel():
+class LRModel:
     singleton = None
     
     def get_model(cls):

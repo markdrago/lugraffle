@@ -5,7 +5,7 @@
 import logging, sys
 from lr_packet import *
 
-class LRPacketTest():
+class LRPacketTest:
     'Class to test the LRPacket class'
 
     def __init__(self):

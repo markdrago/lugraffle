@@ -13,7 +13,7 @@ from twisted.internet import reactor
 from lr_net import *
 from lr_dbus import *
 
-class LugRaffleDaemon():
+class LugRaffleDaemon:
     def __init__(self):
         logging.basicConfig(level=logging.DEBUG,
                             format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',

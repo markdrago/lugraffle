@@ -2,7 +2,7 @@ import logging, sys
 import dbus, dbus.service, dbus.glib, gobject
 from dbus.mainloop.glib import DBusGMainLoop
 
-class DBusTest():
+class DBusTest:
     def __init__(self):
         self.logger = logging.getLogger('LR.DBusTest')
         DBusGMainLoop(set_as_default = True)
