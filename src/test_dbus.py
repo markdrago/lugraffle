@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import logging, sys
 import dbus, dbus.service, dbus.glib, gobject
 from dbus.mainloop.glib import DBusGMainLoop
