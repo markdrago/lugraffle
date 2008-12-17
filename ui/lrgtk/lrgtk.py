@@ -33,7 +33,6 @@ class LRGtk:
         self.add_item_win = gtk.glade.XML(gladefile, 'add_item_dialog')
         self.add_item_win.signal_autoconnect(self)
         self.add_item_dialog = self.add_item_win.get_widget('add_item_dialog')
-        self.add_item_dialog.connect("delete_event", self.hide_add_item_dialog)
 
     def init_dbus(self):
         self.dbus_bus = dbus.SessionBus()
@@ -52,8 +51,8 @@ class LRGtk:
         self.add_item_dialog.show()
 
     def hide_add_item_dialog(self, widget, event):
-        print "Hiding add item dialog"
         self.add_item_dialog.hide()
+        return True
 
     def add_item(self, item):
         self.list.add_item(item)
