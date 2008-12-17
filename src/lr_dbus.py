@@ -14,7 +14,7 @@ class LRDBus(dbus.service.Object):
         self.model.register_listener('dbus', self.announce_change, True)
         self.logger = logging.getLogger('LR.LRDBus')
         self.bus = dbus.SessionBus()
-        self.name = dbus.service.BusName('org.lilug.lugraffle')
+        self.name = dbus.service.BusName('org.lilug.lugraffle', bus=self.bus)
         dbus.service.Object.__init__(self, self.bus, '/')
 
     def announce_change(self, item, entry):
