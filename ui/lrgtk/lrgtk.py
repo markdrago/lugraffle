@@ -54,7 +54,7 @@ class LRGtk:
     def show_add_item_dialog(self, event):
         self.add_item_dialog.show()
 
-    def hide_add_item_dialog(self, widget, event=None):
+    def hide_add_item_dialog(self, widget=None, event=None):
         self.add_item_dialog.hide()
         return True
 
@@ -62,6 +62,7 @@ class LRGtk:
         item = self.add_item_entry.get_text()
         if item != None and item != "":
             self.dbus_iface.add_item(item)
+            self.hide_add_item_dialog()
 
     def init_tree(self):
         model = self.dbus_iface.get_items_and_entries()
