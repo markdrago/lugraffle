@@ -37,6 +37,12 @@ class LRGtk:
         about_win.signal_autoconnect(self)
         self.about_dialog = about_win.get_widget('about_dialog')
 
+        add_entry_win = gtk.glade.XML(gladefile, 'add_entry_dialog')
+        add_entry_win.signal_autoconnect(self)
+        self.add_entry_dialog = add_entry_win.get_widget('add_entry_dialog')
+        self.add_entry_item_entry = add_entry_win.get_widget('add_entry_item_name_entry')
+        self.add_entry_user_entry = add_entry_win.get_widget('add_entry_your_name_entry')
+
         add_item_win = gtk.glade.XML(gladefile, 'add_item_dialog')
         add_item_win.signal_autoconnect(self)
         self.add_item_dialog = add_item_win.get_widget('add_item_dialog')
@@ -55,10 +61,26 @@ class LRGtk:
         self.dbus_iface.connect_to_signal('item_added', self.list.add_item)
         self.dbus_iface.connect_to_signal('entry_added', self.list.add_entry)
 
+    def show_add_entry_dialog(self, event):
+        self.add_entry_dialog.show()
+
+    def hide_add_entry_dialog(self, widget=None, event=None):
+        self.add_entry_item_entry.set_text("")
+        self.add_entry_user_entry.set_text("")
+        self.add_entry_dialog.hide()
+        return True
+
+    def add_entry_dialog_response(self, widget, response_id):
+        if response_id == 1:
+            self.add_entry()
+        else:
+            self.hide_add_entry_dialog()
+
     def show_add_item_dialog(self, event):
         self.add_item_dialog.show()
 
     def hide_add_item_dialog(self, widget=None, event=None):
+        self.add_item_entry.set_text("")
         self.add_item_dialog.hide()
         return True
 
@@ -69,9 +91,17 @@ class LRGtk:
         self.about_dialog.hide()
         return True
 
+    def add_entry(self, widget=None):
+        item = self.add_entry_item_entry.get_text()
+        entry = self.add_entry_user_entry.get_text()
+        if (item is not None and item != "" and
+            entry is not None and entry != ""):
+            self.dbus_iface.add_entry(item, entry)
+            self.hide_add_entry_dialog()
+
     def add_item(self, widget):
         item = self.add_item_entry.get_text()
-        if item != None and item != "":
+        if item is not None and item != "":
             self.dbus_iface.add_item(item)
             self.hide_add_item_dialog()
 
