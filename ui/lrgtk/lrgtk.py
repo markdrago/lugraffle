@@ -28,15 +28,19 @@ class LRGtk:
 
     def init_gtk(self):
         gladefile = 'lrgtk.glade'
-        self.main_win = gtk.glade.XML(gladefile, 'main_window')
-        self.main_win.signal_autoconnect(self)
-        self.main_window = self.main_win.get_widget('main_window')
-        self.tree_view = self.main_win.get_widget('model_tree_view')
+        main_win = gtk.glade.XML(gladefile, 'main_window')
+        main_win.signal_autoconnect(self)
+        self.main_window = main_win.get_widget('main_window')
+        self.tree_view = main_win.get_widget('model_tree_view')
 
-        self.add_item_win = gtk.glade.XML(gladefile, 'add_item_dialog')
-        self.add_item_win.signal_autoconnect(self)
-        self.add_item_dialog = self.add_item_win.get_widget('add_item_dialog')
-        self.add_item_entry = self.add_item_win.get_widget('add_item_name_entry')
+        about_win = gtk.glade.XML(gladefile, 'about_dialog')
+        about_win.signal_autoconnect(self)
+        self.about_dialog = about_win.get_widget('about_dialog')
+
+        add_item_win = gtk.glade.XML(gladefile, 'add_item_dialog')
+        add_item_win.signal_autoconnect(self)
+        self.add_item_dialog = add_item_win.get_widget('add_item_dialog')
+        self.add_item_entry = add_item_win.get_widget('add_item_name_entry')
 
     def init_dbus(self):
         self.dbus_bus = dbus.SessionBus()
@@ -56,6 +60,13 @@ class LRGtk:
 
     def hide_add_item_dialog(self, widget=None, event=None):
         self.add_item_dialog.hide()
+        return True
+
+    def show_about_dialog(self, event):
+        self.about_dialog.show()
+
+    def hide_about_dialog(self, widget=None, event=None):
+        self.about_dialog.hide()
         return True
 
     def add_item(self, widget):
