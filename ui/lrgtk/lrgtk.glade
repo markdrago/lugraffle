@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Dec 23 19:05:16 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Dec 23 19:20:14 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="main_window">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -216,17 +216,18 @@
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>
-              <widget class="GtkLabel" id="item_name_label">
+              <widget class="GtkLabel" id="add_item_name_label">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label" translatable="yes">Item Name:</property>
               </widget>
             </child>
             <child>
-              <widget class="GtkEntry" id="item_name_entry">
+              <widget class="GtkEntry" id="add_item_name_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <signal name="activate" handler="add_item"/>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -251,7 +252,7 @@
                 <property name="label" translatable="yes">gtk-add</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
-                <signal name="activate" handler="add_item"/>
+                <signal name="clicked" handler="add_item"/>
               </widget>
             </child>
             <child>

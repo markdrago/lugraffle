@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#Licensed under the MIT license
+#Copyright (c) 2008 Mark Drago <markdrago@gmail.com>
 
 import logging, sys
 import dbus
@@ -30,13 +32,11 @@ class LRGtk:
         self.main_win.signal_autoconnect(self)
         self.main_window = self.main_win.get_widget('main_window')
         self.tree_view = self.main_win.get_widget('model_tree_view')
+
         self.add_item_win = gtk.glade.XML(gladefile, 'add_item_dialog')
         self.add_item_win.signal_autoconnect(self)
         self.add_item_dialog = self.add_item_win.get_widget('add_item_dialog')
-        add_button = gtk.glade.XML(gladefile, 'add_item_add_button')
-        add_button.signal_autoconnect(self)
-        cancel_button = gtk.glade.XML(gladefile, 'add_item_cancel_button')
-        cancel_button.signal_autoconnect(self)
+        self.add_item_entry = self.add_item_win.get_widget('add_item_name_entry')
 
     def init_dbus(self):
         self.dbus_bus = dbus.SessionBus()
@@ -58,8 +58,10 @@ class LRGtk:
         self.add_item_dialog.hide()
         return True
 
-    def add_item(self, item):
-        self.list.add_item(item)
+    def add_item(self, widget):
+        item = self.add_item_entry.get_text()
+        if item != None and item != "":
+            self.dbus_iface.add_item(item)
 
     def init_tree(self):
         model = self.dbus_iface.get_items_and_entries()
@@ -74,6 +76,7 @@ class LRGtk:
 
 class LRGtk_List:
     def __init__(self, tree_view):
+        self.logger = logging.getLogger('LRGtk_List')
         #create treestore
         self.tree_view = tree_view
         self.tree_store = gtk.TreeStore(str)
