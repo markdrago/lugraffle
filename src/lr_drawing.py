@@ -10,12 +10,18 @@ RANDMAX = 4294967295
 
 class LRDrawing:
     def __init__(self):
+        self.logger = logging.getLogger('LR.LRDrawing')
         self.randomint = random.randint(0, RANDMAX)
         sha1 = sha.new("%d" % self.randomint)
         self.hash = sha1.hexdigest()
+        self.hashes = []
     
     def get_random_int(self):
         return self.randomint
 
     def get_hash(self):
         return self.hash
+
+    def add_hash(self, hash):
+        self.hashes.append(hash)
+        self.logger.info('Added drawing hash: %s' % hash)

@@ -25,6 +25,9 @@ class LRControl:
         self.dispatch('drawing_response_hash_cb',
                       dict(hash=self.drawing.get_hash()))
 
+    def add_drawing_hash(self, hash):
+        self.drawing.add_hash(hash)
+
     def initiate_drawing(self):
         self.dispatch('initiate_drawing_cb')
 

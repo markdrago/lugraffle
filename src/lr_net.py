@@ -27,9 +27,9 @@ class LRNet(DatagramProtocol):
 
     def datagramReceived(self, data, (host, port)):
         #we should not handle packets that we sent ourselves
-#         if host in self.local_ip_list:
-#             self.logger.debug("Not replying to packet from self")
-#             return
+        if host in self.local_ip_list:
+            self.logger.debug("Not replying to packet from self")
+            return
         
         self.logger.info("Received packet from %s:%d" % (host, port))
         try:
@@ -49,6 +49,9 @@ class LRNet(DatagramProtocol):
 
         if packet.packet_type == 'RAFFLE_DRAWING_START':
             self.control.drawing_start()
+
+        if packet.packet_type == 'RAFFLE_DRAWING_RESPONSE_HASH':
+            self.control.add_drawing_hash(packet.get_content())
 
     def send_packet(self, packet):
         data = packet.produce_packet()
