@@ -48,14 +48,17 @@ class LRNet(DatagramProtocol):
 
         self.model.dump_model_state()
 
+    def send_data(self, data):
+        self.logger.info("Sending Data: %s" % data)
+        self.sendsocket.sendto(data, ('<broadcast>', self.port))
+
     def announce_change(self, item, entry):
         packet = LRPacket()
         packet.set_type('RAFFLE_OBJECT_ADD')
         packet.add_object(item, entry)
-        data = packet.produce_packet()
-
-        self.logger.info("Sending Data: %s" % data)
-        self.sendsocket.sendto(data, ('<broadcast>', self.port))
+        self.send_data(packet.produce_packet())
 
     def initiate_drawing_cb(self):
-        self.logger.info("Initiating Drawing in Network")
+        packet = LRPacket()
+        packet.set_type('RAFFLE_DRAWING_START')
+        self.send_data(packet.produce_packet())
