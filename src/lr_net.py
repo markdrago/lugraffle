@@ -27,9 +27,9 @@ class LRNet(DatagramProtocol):
 
     def datagramReceived(self, data, (host, port)):
         #we should not handle packets that we sent ourselves
-        if host in self.local_ip_list:
-            self.logger.debug("Not replying to packet from self")
-            return
+#         if host in self.local_ip_list:
+#             self.logger.debug("Not replying to packet from self")
+#             return
         
         self.logger.info("Received packet from %s:%d" % (host, port))
         try:
@@ -45,10 +45,13 @@ class LRNet(DatagramProtocol):
                 self.model.add_item('net', item)
             for entry in packet.entries:
                 self.model.add_entry('net', entry[0], entry[1])
+            self.model.dump_model_state()
 
-        self.model.dump_model_state()
+        if packet.packet_type == 'RAFFLE_DRAWING_START':
+            self.control.drawing_start()
 
-    def send_data(self, data):
+    def send_packet(self, packet):
+        data = packet.produce_packet()
         self.logger.info("Sending Data: %s" % data)
         self.sendsocket.sendto(data, ('<broadcast>', self.port))
 
@@ -56,9 +59,15 @@ class LRNet(DatagramProtocol):
         packet = LRPacket()
         packet.set_type('RAFFLE_OBJECT_ADD')
         packet.add_object(item, entry)
-        self.send_data(packet.produce_packet())
+        self.send_packet(packet)
 
     def initiate_drawing_cb(self):
         packet = LRPacket()
         packet.set_type('RAFFLE_DRAWING_START')
-        self.send_data(packet.produce_packet())
+        self.send_packet(packet)
+
+    def drawing_response_hash_cb(self, hash):
+        packet = LRPacket()
+        packet.set_type('RAFFLE_DRAWING_RESPONSE_HASH')
+        packet.set_content(hash)
+        self.send_packet(packet)

@@ -22,6 +22,7 @@ class LRPacket:
     def __init__(self, data=None):
         self.items = []
         self.entries = []
+        self.content = ""
         if data:
             self.parse_packet(data)
 
@@ -31,6 +32,12 @@ class LRPacket:
     def add_object(self, item, entry):
         obj = (item, entry)
         self.entries.append(obj)
+
+    def set_content(self, content):
+        self.content = content
+
+    def get_content(self):
+        return self.content
 
     def produce_packet(self):
         data = 'LRP1'
@@ -43,6 +50,10 @@ class LRPacket:
 
         if len(self.entries) > 0:
             data += self.get_lists_as_data(self.entries)
+        else:
+            data += "%d;" % len(self.content)
+            if len(self.content) > 0:
+                data += "%s;" % self.content
 
         return data
 
