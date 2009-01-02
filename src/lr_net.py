@@ -6,6 +6,7 @@ from twisted.internet.protocol import DatagramProtocol
 import lr_utils
 from lr_packet import *
 from lr_model import *
+from lr_control import *
 
 #network interface for lug raffle
 class LRNet(DatagramProtocol):
@@ -14,6 +15,8 @@ class LRNet(DatagramProtocol):
         self.logger = logging.getLogger('LR.LRNet')
         self.model = LRModel.get_model()
         self.model.register_listener('net', self.announce_change, False)
+        self.control = LRControl.get_control()
+        self.control.register(self)
         reactor.listenUDP(self.port, self)
 
     def startProtocol(self):
@@ -53,3 +56,6 @@ class LRNet(DatagramProtocol):
 
         self.logger.info("Sending Data: %s" % data)
         self.sendsocket.sendto(data, ('<broadcast>', self.port))
+
+    def initiate_drawing_cb(self):
+        self.logger.info("Initiating Drawing in Network")

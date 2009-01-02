@@ -6,12 +6,15 @@ import dbus.service
 import dbus.glib
 import logging
 from lr_model import *
+from lr_control import *
 
 #network interface for lug raffle
 class LRDBus(dbus.service.Object):
     def __init__(self, reactor):
         self.model = LRModel.get_model()
         self.model.register_listener('dbus', self.announce_change, True)
+        self.control = LRControl.get_control()
+        self.control.register(self)
         self.logger = logging.getLogger('LR.LRDBus')
         self.bus = dbus.SessionBus()
         self.name = dbus.service.BusName('org.lilug.lugraffle', bus=self.bus)
@@ -50,3 +53,7 @@ class LRDBus(dbus.service.Object):
     @dbus.service.method('org.lilug.lugraffle', out_signature='a{sas}')
     def get_items_and_entries(self):
         return self.model.get_items_and_entries()
+
+    @dbus.service.method('org.lilug.lugraffle')
+    def initiate_drawing(self):
+        self.control.initiate_drawing()
